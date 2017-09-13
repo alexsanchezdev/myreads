@@ -1,27 +1,50 @@
 import React, { Component } from 'react'
 import Book from './Book'
+import '../App.css'
+import PropTypes from 'prop-types'
 
 class Bookshelf extends Component {
-    render() {
-        return (
-            <div className="bookshelf">
-            <h2 className="bookshelf-title">{this.props.title}</h2>
-            <div className="bookshelf-books">
-              <ol className="books-grid">
-                <li>
-                  <Book title="The Hobbit" author="J.R.R. Tolkien" cover="http://books.google.com/books/content?id=pD6arNyKyi8C&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE70Rw0CCwNZh0SsYpQTkMbvz23npqWeUoJvVbi_gXla2m2ie_ReMWPl0xoU8Quy9fk0Zhb3szmwe8cTe4k7DAbfQ45FEzr9T7Lk0XhVpEPBvwUAztOBJ6Y0QPZylo4VbB7K5iRSk&source=gbs_api"/>
-                </li>
-                <li>
-                  <Book title="Oh, the Places You'll Go!" author="Seuss" cover="http://books.google.com/books/content?id=1q_xAwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE712CA0cBYP8VKbEcIVEuFJRdX1k30rjLM29Y-dw_qU1urEZ2cQ42La3Jkw6KmzMmXIoLTr50SWTpw6VOGq1leINsnTdLc_S5a5sn9Hao2t5YT7Ax1RqtQDiPNHIyXP46Rrw3aL8&source=gbs_api"/>
-                </li>
-                <li>
-                  <Book title="The Adventures of Tom Sawyer" author="Mark Twain" cover="http://books.google.com/books/content?id=32haAAAAMAAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72yckZ5f5bDFVIf7BGPbjA0KYYtlQ__nWB-hI_YZmZ-fScYwFy4O_fWOcPwf-pgv3pPQNJP_sT5J_xOUciD8WaKmevh1rUR-1jk7g1aCD_KeJaOpjVu0cm_11BBIUXdxbFkVMdi&source=gbs_api"/>
-                </li>
-              </ol>
-            </div>
-          </div>
-        )
+
+  // List all the books available in the current book shelf.
+  // Detect first if books is undefined or null before mapping to return a Book
+  // component for each of the book presented.
+  listBooks() {
+    const books = this.props.books
+    if (typeof books !== 'undefined' && books !== null) {
+      if (books.length > 0) {
+        const bookList = books.map(book => {
+          return (
+            <li key={book.id}>
+              <Book id={book.id} shelf={book.shelf} title={book.title} authors={book.authors} cover={book.imageLinks.thumbnail} updateParent={this.props.handler} />
+            </li>
+          )
+        });
+        return bookList
+      } else {
+        return <p>There are no books in this shelf.</p>
+      }
     }
+
+  }
+
+  render() {
+    return (
+      <div className="bookshelf">
+        <h2 className="bookshelf-title">{this.props.title}</h2>
+        <div className="bookshelf-books">
+          <ol className="books-grid">
+            {this.listBooks()}
+          </ol>
+        </div>
+      </div>
+    )
+  }
+}
+
+Bookshelf.propTypes = {
+  title: PropTypes.string.isRequired,
+  handler: PropTypes.func.isRequired,
+  books: PropTypes.array.isRequired
 }
 
 export default Bookshelf
